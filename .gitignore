@@ -1,0 +1,16 @@
+# Godot
+.godot/
+client/.godot/
+client/exports/
+*.translation
+
+# Node
+server/node_modules/
+server/dist/
+
+# tools (local Godot binary used for headless verification)
+tools/
+
+# OS
+.DS_Store
+Thumbs.db

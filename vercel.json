@@ -1,7 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "outputDirectory": "client/exports/web",
-  "buildCommand": "echo 'web export is built by Godot — see docs/DEPLOY_WEB.md'",
+  "outputDirectory": "web",
   "headers": [
     {
       "source": "/(.*)",

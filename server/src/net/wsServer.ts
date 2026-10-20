@@ -14,6 +14,7 @@
  */
 
 import { WebSocketServer, WebSocket } from "ws";
+import { createServer, Server as HttpServer } from "http";
 import { randomBytes } from "crypto";
 import { config } from "../config";
 import {
@@ -43,13 +44,25 @@ interface ClientCtx {
 
 export class GameServer {
   private wss: WebSocketServer;
+  private http: HttpServer;
   private rooms = new RoomManager();
   private clients = new Set<ClientCtx>();
   private heartbeat: NodeJS.Timeout;
 
   constructor(port = config.port, host = config.host) {
-    this.wss = new WebSocketServer({ port, host });
+    // Plain HTTP fallback: /health for uptime checks, everything else 426.
+    this.http = createServer((req, res) => {
+      if (req.url === "/health" || req.url === "/") {
+        res.writeHead(200, { "content-type": "application/json" });
+        res.end(JSON.stringify({ status: "ok", service: "block-duel-server" }));
+      } else {
+        res.writeHead(404);
+        res.end();
+      }
+    });
+    this.wss = new WebSocketServer({ server: this.http });
     this.wss.on("connection", (socket) => this.onConnection(socket));
+    this.http.listen(port, host);
     this.heartbeat = setInterval(() => this.heartbeatSweep(), config.heartbeatIntervalMs);
   }
 
@@ -57,6 +70,7 @@ export class GameServer {
     clearInterval(this.heartbeat);
     for (const c of this.clients) c.socket.terminate();
     this.wss.close();
+    this.http.close();
   }
 
   // ---------------------------------------------------------

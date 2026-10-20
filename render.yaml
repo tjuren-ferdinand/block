@@ -1,0 +1,11 @@
+# Render blueprint: https://render.com → New → Blueprint → pick this repo.
+# Free tier supports WebSockets natively (unlike Vercel/Netlify).
+services:
+  - type: web
+    name: block-duel-server
+    runtime: node
+    rootDir: server
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: node dist/index.js
+    healthCheckPath: /health

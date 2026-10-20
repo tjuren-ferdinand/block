@@ -88,6 +88,20 @@ godot --path client -- --net-smoke
 
 ---
 
+## 5b. Play on phones right now (web build, no app install)
+
+The fastest way to test multiplayer on real phones — no Xcode/Android SDK
+needed. The game runs in the phone's browser:
+
+```bash
+node scripts/web_server.mjs 8081 client/exports/web   # serves the web export
+tools/cloudflared tunnel --url http://localhost:8081  # public URL for phones
+tools/cloudflared tunnel --url http://localhost:8080  # public URL for the WS server
+```
+
+Full instructions (including a permanent Vercel + Render deploy):
+**docs/DEPLOY_WEB.md**
+
 ## 6. Play an iPhone-vs-Samsung LAN match
 
 1. Start the server on your Mac (step 2). All three devices must be on the
